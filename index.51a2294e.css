@@ -1,0 +1,2 @@
+img{height:auto;width:450px;display:block}.cat-info{background-color:#f9f9f9;border:1px solid #ccc;flex-wrap:wrap;gap:20px;padding:10px;display:flex}p{width:450px;display:block}.hidden,.loader{display:none}.loader.active{width:48px;height:48px;box-sizing:border-box;border:5px solid #ff3d00;border-color:#ff3d00 rgba(0,0,0,0);border-radius:50%;animation:rotation 1s linear infinite;display:block}@keyframes rotation{0%{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+/*# sourceMappingURL=index.51a2294e.css.map */

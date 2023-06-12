@@ -23,11 +23,11 @@ p {
     display: none;
 }
 
-.loader {
+.loader.hidden {
     display: none;
-}
+} 
 
-.loader.active {
+.loader {
     width: 48px;
     height: 48px;
     border: 5px solid;

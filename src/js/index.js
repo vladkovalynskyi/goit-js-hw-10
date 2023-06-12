@@ -1,26 +1,21 @@
 import { fetchBreeds, fetchCatByBreed } from './cats-api.js';
+import SlimSelect from 'slim-select';
+
 
 const breedSelect = document.querySelector('.breed-select');
 const loader = document.querySelector('.loader');
 const error = document.querySelector('.error');
 const catInfo = document.querySelector('.cat-info');
 
-hideError();
-showLoader();
+hideStatus(error);
+showStatus(loader);
 
 fetchBreeds()
     .then(mapBreedsToOptions)
     .then(renderBreedOptions)
     .catch(handleError)
-    .finally(hideLoader);
+    .finally(() => hideStatus(loader));
 
-const slimSelect = new SlimSelect({
-    select: breedSelect,
-    placeholderText: 'Select Breed',
-    allowDeselect: true,
-    closeOnSelect: false,
-    showSearch: true,
-});
 
 breedSelect.addEventListener('change', handleBreedSelectChange);
  
@@ -29,9 +24,18 @@ function mapBreedsToOptions(breeds) {
         text: breed.name,
         value: breed.id
     }));
+
+    
 }
 
 function renderBreedOptions(breedOptions) {
+    const slimSelect = new SlimSelect({
+        select: breedSelect,
+        placeholderText: 'Select Breed',
+        allowDeselect: true,
+        closeOnSelect: false,
+        showSearch: true,
+    });
     slimSelect.setData(breedOptions);
 }
 
@@ -44,25 +48,38 @@ function handleError(error) {
 function handleBreedSelectChange() {
     const selectedBreedId = breedSelect.value;
 
-    showLoader();
-    hideError();
-    hideCatInfo();
+    showStatus(loader);
+    hideStatus(error);
+    hideStatus(catInfo);
 
     fetchCatByBreed(selectedBreedId)
         .then(formatCatData)
         .then(updateCatInfo)
         .catch(handleCatError)
-        .finally(hideLoader);
+        .finally(() => hideStatus(loader));
 };
 
-function updateCatInfo(catData) {  
-    catInfo.innerHTML = `
-        <img src="${catData.image}" alt="${catData.breed}">
-        <h2>${catData.breed}</h2>
-        <p><strong>Description:</strong> ${catData.description}</p>
-        <p><strong>Temperament:</strong> ${catData.temperament}</p>
-    `;
-    showCatInfo();
+function updateCatInfo(catData) { 
+    const catInfoContainer = document.createElement('div');
+    const catImage = document.createElement('img');
+    const catName = document.createElement('h2');
+    const catDescription = document.createElement('p');
+    const catTemperament = document.createElement('p');
+
+    catImage.src = catData.image;
+    catImage.alt = catData.breed;
+    catName.textContent = catData.breed;
+    catDescription.innerHTML = `<strong>Description:</strong> ${catData.description}`;
+    catTemperament.innerHTML = `<strong>Temperament:</strong> ${catData.temperament}`;
+
+    catInfoContainer.appendChild(catImage);
+    catInfoContainer.appendChild(catName);
+    catInfoContainer.appendChild(catDescription);
+    catInfoContainer.appendChild(catTemperament);
+
+    catInfo.innerHTML = '';
+    catInfo.appendChild(catInfoContainer);
+    showStatus(catInfo);
 }
 
 function formatCatData(catData) {
@@ -84,27 +101,10 @@ function handleCatError(error) {
     console.error('Error fetching cat:', error);
 }
 
-function showLoader() {
-    loader.classList.add('active');
-};
-    
-function hideLoader() {
-    loader.classList.remove('active');
-};
+function showStatus(element) {
+    element.classList.remove('hidden');
+}
 
-function showError() {
-    error.classList.remove('hidden');
-};
-
-function hideError() {
-    error.classList.add('hidden');
-};
-
-function showCatInfo() {
-    catInfo.classList.remove('hidden');
-};
-
-function hideCatInfo() {
-    catInfo.classList.add('hidden');
-};
-
+function hideStatus(element) {
+    element.classList.add('hidden');
+}

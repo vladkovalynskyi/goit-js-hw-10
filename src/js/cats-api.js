@@ -1,25 +1,22 @@
 const API_KEY = 'live_K3pWxGPAiQFEJQ42hDV1K5hQeSWBKdnCioFta7dHuRIvGOeOj5hGbP70PmaQcOAv';
+const BASE_URL = 'https://api.thecatapi.com/v1';
 
 export function fetchBreeds() {
-    const url = 'https://api.thecatapi.com/v1/breeds';
-  
-    return fetch(url)
-    .then(response => response.json())
-    .then(data => data)
-    .catch(error => {
-        console.error('Error fetching breeds:', error);
-        throw error;
-    });
+  return fetch(`${BASE_URL}/breeds`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Error fetching breeds: ${response.status} ${response.statusText}`);
+      }
+      return response.json();
+    })
 }
 
 export function fetchCatByBreed(breedId) {
-  const url = `https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}&api_key=${API_KEY}`;
-  
-  return fetch(url)
-    .then(response => response.json())
-    .then(data => data)
-    .catch(error => {
-      console.error('Error fetching cat by breed:', error);
-      throw error;
-    });
+  return fetch(`${BASE_URL}/images/search?breed_ids=${breedId}&api_key=${API_KEY}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Error fetching cat by breed: ${response.status} ${response.statusText}`);
+      }
+      return response.json();
+    })
 }
